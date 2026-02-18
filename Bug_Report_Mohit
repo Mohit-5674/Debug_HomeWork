@@ -1,1 +1,95 @@
+Bug Report – Advanced Debug Challenge (Version B)
 
+Bug 1 – Sigmoid Numerical Instability
+
+Location: sigmoid() function
+
+What’s wrong:
+The sigmoid function directly uses np.exp(-z). When z becomes very large or very small, this causes overflow or underflow.
+
+Why it’s wrong:
+This leads to NaN or infinite values in activations, which completely breaks training.
+
+How I fixed it:
+I clipped the input values before applying sigmoid to keep them in a safe range.
+
+Observable symptoms:
+Loss became NaN and the model stopped learning properly.
+
+Bug 2 – Poor Weight Initialization
+
+Location: initialize_parameters()
+
+What’s wrong:
+Weights were initialized using *10, which made them extremely large.
+
+Why it’s wrong:
+Large weights push sigmoid into saturation, causing gradients to vanish or explode.
+
+How I fixed it:
+I changed initialization to small values using *0.01.
+
+Observable symptoms:
+Cost did not decrease and training was unstable.
+
+Bug 3 – Incorrect Cost Function Sign
+
+Location: propagate()
+
+What’s wrong:
+The cross-entropy loss was missing the negative sign.
+
+Why it’s wrong:
+Gradient descent is supposed to minimize loss, but without the negative sign it was actually maximizing it.
+
+How I fixed it:
+I added the negative sign and also included a small epsilon for numerical stability.
+
+Observable symptoms:
+Loss was increasing instead of decreasing.
+
+Bug 4 – Wrong Gradient Direction
+
+Location: propagate()
+
+What’s wrong:
+Gradients were calculated using (y - A) instead of (A - y).
+
+Why it’s wrong:
+This reverses the gradient direction, pushing parameters away from the optimal solution.
+
+How I fixed it:
+I corrected the formula to use (A - y) for both dw and db.
+
+Observable symptoms:
+Accuracy was worse than random guessing and cost kept rising.
+
+Bug 5 – Prediction Logic Reversed
+
+Location: predict()
+
+What’s wrong:
+Predictions were assigned class 1 when probability was ≤ 0.5.
+
+Why it’s wrong:
+This inverted the classification logic, making high probabilities predict class 0.
+
+How I fixed it:
+I updated the condition to assign class 1 only when probability is greater than 0.5.
+
+Observable symptoms:
+Very low accuracy and inverted predictions.
+
+Final Result
+
+After fixing all bugs:
+
+Cost decreases properly
+
+Training becomes stable
+
+Accuracy improves significantly
+
+Model performs better than random guessing
+
+Nupur
